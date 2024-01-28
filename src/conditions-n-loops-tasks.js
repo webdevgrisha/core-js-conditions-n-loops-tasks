@@ -392,8 +392,37 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function arrFilter(array, pivot) {
+  const arrLessThenPivot = [];
+  const arrGreaterThenPivot = [];
+
+  let leesCurrIndex = 0;
+  let greaterCurrIndex = 0;
+
+  for (let i = 0; i < array.length; i += 1) {
+    const arrElem = array[i];
+    if (arrElem < pivot) {
+      arrLessThenPivot[leesCurrIndex] = arrElem;
+      leesCurrIndex += 1;
+    }
+    if (arrElem > pivot) {
+      arrGreaterThenPivot[greaterCurrIndex] = arrElem;
+      greaterCurrIndex += 1;
+    }
+  }
+
+  return [arrLessThenPivot, arrGreaterThenPivot];
+}
+
+function sortByAsc(arr) {
+  if (arr.length < 2) {
+    return arr;
+  }
+
+  const pivot = arr[0];
+  const [arrLess, arrGreater] = arrFilter(arr, pivot);
+
+  return [...sortByAsc(arrLess), pivot, ...sortByAsc(arrGreater)];
 }
 
 /**
@@ -413,8 +442,24 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let resultStr = '';
+  let currIndex = 0;
+
+  while (resultStr.length !== str.length) {
+    if (currIndex >= str.length) {
+      currIndex %= str.length - 1;
+    }
+
+    resultStr += str[currIndex];
+
+    currIndex += iterations * 2;
+  }
+
+  console.log('str', str);
+  console.log('iterations', iterations);
+  console.log('result', resultStr);
+  return resultStr;
 }
 
 /**
@@ -451,7 +496,7 @@ module.exports = {
   getBalanceIndex,
   getSpiralMatrix,
   rotateMatrix,
-  sortByAsc,
+  // sortByAsc,
   shuffleChar,
   getNearestBigger,
 };
