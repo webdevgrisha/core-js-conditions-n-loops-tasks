@@ -496,7 +496,7 @@ module.exports = {
   getBalanceIndex,
   getSpiralMatrix,
   rotateMatrix,
-  // sortByAsc,
+  sortByAsc,
   shuffleChar,
   getNearestBigger,
 };
