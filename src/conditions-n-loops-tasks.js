@@ -456,9 +456,6 @@ function shuffleChar(str, iterations) {
     currIndex += iterations * 2;
   }
 
-  console.log('str', str);
-  console.log('iterations', iterations);
-  console.log('result', resultStr);
   return resultStr;
 }
 
