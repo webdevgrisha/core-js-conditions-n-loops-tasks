@@ -127,7 +127,6 @@ function convertToRomanNumerals(num) {
 
   if (romanNumbers[num]) return romanNumbers[num];
 
-  const romanNum = [];
   let resultRomanNum = '';
   let currNum = num;
   let placeNumber = 1;
@@ -136,18 +135,32 @@ function convertToRomanNumerals(num) {
     const division = currNum % 10;
 
     if (placeNumber === 1) {
-      romanNum.push(romanNumbers[division]);
+      resultRomanNum = (romanNumbers[division] || '') + resultRomanNum;
+    } else {
+      let tensPlace;
+
+      switch (division) {
+        case 1:
+          tensPlace = 'X';
+          break;
+        case 2:
+          tensPlace = 'XX';
+          break;
+        case 3:
+          tensPlace = 'XXX';
+          break;
+        default:
+          break;
+      }
+
+      resultRomanNum = tensPlace + resultRomanNum;
     }
 
-    romanNum.push(division === 1 ? 'X' : 'XX');
-
     currNum = Math.floor(currNum / 10);
+    placeNumber += 1;
   }
 
-  for (let i = 0)
-  console.log('num', num);
-  console.log('romanNum', romanNum);
-  return romanNum;
+  return resultRomanNum;
 }
 /**
  * Converts a number to a string, replacing digits with words.
@@ -165,31 +178,56 @@ function convertToRomanNumerals(num) {
  *  '1950.2'  => 'one nine five zero point two'
  */
 function convertNumberToString(numberStr) {
-  const numbers = {
-    0: 'zero',
-    1: 'one',
-    2: 'two',
-    3: 'three',
-    4: 'four',
-    5: 'five',
-    6: 'six',
-    7: 'seven',
-    8: 'eight',
-    9: 'nine',
-    '.': 'point',
-    ',': 'point',
-    '+': 'plus',
-    '-': 'minus',
-  };
-
   let resultStr = '';
 
   for (let i = 0; i < numberStr.length; i += 1) {
-    if (i === numberStr.length - 1) {
-      resultStr += `${numbers[numberStr[i]]}`;
-    } else {
-      resultStr += `${numbers[numberStr[i]]} `;
+    let elem;
+    switch (numberStr[i]) {
+      case '0':
+        elem = 'zero';
+        break;
+      case '1':
+        elem = 'one';
+        break;
+      case '2':
+        elem = 'two';
+        break;
+      case '3':
+        elem = 'three';
+        break;
+      case '4':
+        elem = 'four';
+        break;
+      case '5':
+        elem = 'five';
+        break;
+      case '6':
+        elem = 'six';
+        break;
+      case '7':
+        elem = 'seven';
+        break;
+      case '8':
+        elem = 'eight';
+        break;
+      case '9':
+        elem = 'nine';
+        break;
+      case '.':
+      case ',':
+        elem = 'point';
+        break;
+      case '+':
+        elem = 'plus';
+        break;
+      case '-':
+        elem = 'minus';
+        break;
+      default:
+        break;
     }
+
+    resultStr += i === numberStr.length - 1 ? elem : `${elem} `;
   }
 
   return resultStr;
