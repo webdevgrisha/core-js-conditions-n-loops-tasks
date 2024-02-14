@@ -315,8 +315,33 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  let middleIndex = 1;
+  let leftSum = 0;
+  let rightSum = 0;
+
+  if (arr.length <= 2) return -1;
+
+  do {
+    for (let i = 0; i < arr.length; i += 1) {
+      if (i < middleIndex) {
+        leftSum += arr[i];
+      }
+
+      if (i > middleIndex) {
+        rightSum += arr[i];
+      }
+    }
+
+    if (leftSum === rightSum) return middleIndex;
+
+    middleIndex += 1;
+
+    leftSum = 0;
+    rightSum = 0;
+  } while (middleIndex !== arr.length - 1);
+
+  return -1;
 }
 
 /**
@@ -391,37 +416,36 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function arrFilter(array, pivot) {
-  const arrLessThenPivot = [];
-  const arrGreaterThenPivot = [];
+// function arrFilter(array, pivot) {
+//   const arrLessThenPivot = [];
+//   const arrGreaterThenPivot = [];
 
-  let leesCurrIndex = 0;
-  let greaterCurrIndex = 0;
+//   let leesCurrIndex = 0;
+//   let greaterCurrIndex = 0;
 
-  for (let i = 0; i < array.length; i += 1) {
-    const arrElem = array[i];
-    if (arrElem < pivot) {
-      arrLessThenPivot[leesCurrIndex] = arrElem;
-      leesCurrIndex += 1;
-    }
-    if (arrElem > pivot) {
-      arrGreaterThenPivot[greaterCurrIndex] = arrElem;
-      greaterCurrIndex += 1;
-    }
-  }
+//   for (let i = 0; i < array.length; i += 1) {
+//     const arrElem = array[i];
+//     if (arrElem < pivot) {
+//       arrLessThenPivot[leesCurrIndex] = arrElem;
+//       leesCurrIndex += 1;
+//     }
+//     if (arrElem > pivot) {
+//       arrGreaterThenPivot[greaterCurrIndex] = arrElem;
+//       greaterCurrIndex += 1;
+//     }
+//   }
 
-  return [arrLessThenPivot, arrGreaterThenPivot];
-}
+//   return [arrLessThenPivot, arrGreaterThenPivot];
+// }
 
-function sortByAsc(arr) {
-  if (arr.length < 2) {
-    return arr;
-  }
-
-  const pivot = arr[0];
-  const [arrLess, arrGreater] = arrFilter(arr, pivot);
-
-  return [...sortByAsc(arrLess), pivot, ...sortByAsc(arrGreater)];
+function sortByAsc(/* arr */) {
+  throw new Error('Not implemented');
+  // if (arr.length < 2) {
+  //   return arr;
+  // }
+  // const pivot = arr[0];
+  // const [arrLess, arrGreater] = arrFilter(arr, pivot);
+  // return [...sortByAsc(arrLess), pivot, ...sortByAsc(arrGreater)];
 }
 
 /**
@@ -444,16 +468,37 @@ function sortByAsc(arr) {
 function shuffleChar(str, iterations) {
   let resultStr = '';
   let currIndex = 0;
+  let coefficient;
+  const strLen = str.length;
+  const mod = strLen % 2 !== 0 ? strLen : strLen - 1;
+  const stepLen = iterations % 4;
+
+  switch (iterations % (strLen - 1)) {
+    case 1:
+    case 2:
+      coefficient = 2;
+      break;
+    case 3:
+      coefficient = 1;
+      break;
+    default:
+      return str;
+  }
 
   while (resultStr.length !== str.length) {
     if (currIndex >= str.length) {
-      currIndex %= str.length - 1;
+      currIndex %= mod;
     }
 
     resultStr += str[currIndex];
 
-    currIndex += iterations * 2;
+    currIndex += stepLen * coefficient;
   }
+
+  console.log('str', str);
+  console.log('strLen', strLen);
+  console.log('iterations', iterations);
+  console.log('resultStr', resultStr);
 
   return resultStr;
 }
