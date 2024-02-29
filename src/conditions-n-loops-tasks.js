@@ -1,3 +1,5 @@
+/* eslint-disable no-continue */
+/* eslint-disable no-param-reassign */
 /* *******************************************************************************************
  *                                                                                           *
  * Please read the following tutorial before implementing tasks:                             *
@@ -471,36 +473,90 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-// function arrFilter(array, pivot) {
-//   const arrLessThenPivot = [];
-//   const arrGreaterThenPivot = [];
 
-//   let leesCurrIndex = 0;
-//   let greaterCurrIndex = 0;
+function sortByAsc(arr, lIndex = 0, rIndex = arr.length - 1) {
+  const arrLinkCopy = arr;
+  let left = lIndex;
+  let right = rIndex;
 
-//   for (let i = 0; i < array.length; i += 1) {
-//     const arrElem = array[i];
-//     if (arrElem < pivot) {
-//       arrLessThenPivot[leesCurrIndex] = arrElem;
-//       leesCurrIndex += 1;
-//     }
-//     if (arrElem > pivot) {
-//       arrGreaterThenPivot[greaterCurrIndex] = arrElem;
-//       greaterCurrIndex += 1;
-//     }
-//   }
+  let pivotIndex = Math.floor((lIndex + rIndex) / 2);
+  const pivot = arrLinkCopy[pivotIndex];
 
-//   return [arrLessThenPivot, arrGreaterThenPivot];
-// }
+  let leftSideElemCount = pivotIndex - lIndex;
+  let rightSideElemCount = rIndex - pivotIndex;
 
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
-  // if (arr.length < 2) {
-  //   return arr;
-  // }
-  // const pivot = arr[0];
-  // const [arrLess, arrGreater] = arrFilter(arr, pivot);
-  // return [...sortByAsc(arrLess), pivot, ...sortByAsc(arrGreater)];
+  while (leftSideElemCount) {
+    const lElem = arr[left];
+
+    if (lElem > pivot) {
+      let finded = false;
+
+      while (rightSideElemCount && !finded) {
+        const rElem = arrLinkCopy[right];
+
+        if (rElem < pivot) {
+          arrLinkCopy[left] = rElem;
+          arrLinkCopy[right] = lElem;
+
+          finded = true;
+        }
+
+        right -= 1;
+        rightSideElemCount -= 1;
+      }
+
+      if (!finded && left < pivotIndex) {
+        arrLinkCopy[pivotIndex] = lElem;
+        arrLinkCopy[left] = pivot;
+        pivotIndex = left;
+      }
+    }
+
+    if (lElem < pivot && left > pivotIndex) {
+      arrLinkCopy[pivotIndex] = lElem;
+      arrLinkCopy[left] = pivot;
+
+      if (left - pivotIndex > 1) {
+        const oldValue = pivotIndex;
+        leftSideElemCount += left - pivotIndex;
+        pivotIndex = left;
+        left = oldValue;
+      } else {
+        pivotIndex = left;
+      }
+    }
+
+    left += 1;
+    leftSideElemCount -= 1;
+  }
+
+  while (rightSideElemCount) {
+    const rElem = arr[right];
+
+    if (
+      (rElem < pivot && right > pivotIndex) ||
+      (rElem > pivot && right < pivotIndex)
+    ) {
+      arrLinkCopy[pivotIndex] = rElem;
+      arrLinkCopy[right] = pivot;
+
+      if (pivotIndex - right > 1) {
+        const oldValue = pivotIndex;
+        rightSideElemCount += pivotIndex - right;
+        pivotIndex = right;
+        right = oldValue;
+      } else {
+        pivotIndex = right;
+      }
+    }
+
+    right -= 1;
+    rightSideElemCount -= 1;
+  }
+
+  if (pivotIndex - 1 > lIndex) sortByAsc(arr, lIndex, pivotIndex - 1);
+
+  if (pivotIndex + 1 < rIndex) sortByAsc(arr, pivotIndex + 1, rIndex);
 }
 
 /**
@@ -520,42 +576,43 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(str, iterations) {
-  let resultStr = '';
-  let currIndex = 0;
-  let coefficient;
-  const strLen = str.length;
-  const mod = strLen % 2 !== 0 ? strLen : strLen - 1;
-  const stepLen = iterations % 4;
+function shuffleChar(/* str, iterations */) {
+  throw new Error('Not implemented');
+  // let resultStr = '';
+  // let currIndex = 0;
+  // let coefficient;
+  // const strLen = str.length;
+  // const mod = strLen % 2 !== 0 ? strLen : strLen - 1;
+  // const stepLen = iterations % 4;
 
-  switch (iterations % (strLen - 1)) {
-    case 1:
-    case 2:
-      coefficient = 2;
-      break;
-    case 3:
-      coefficient = 1;
-      break;
-    default:
-      return str;
-  }
+  // switch (iterations % (strLen - 1)) {
+  //   case 1:
+  //   case 2:
+  //     coefficient = 2;
+  //     break;
+  //   case 3:
+  //     coefficient = 1;
+  //     break;
+  //   default:
+  //     return str;
+  // }
 
-  while (resultStr.length !== str.length) {
-    if (currIndex >= str.length) {
-      currIndex %= mod;
-    }
+  // while (resultStr.length !== str.length) {
+  //   if (currIndex >= str.length) {
+  //     currIndex %= mod;
+  //   }
 
-    resultStr += str[currIndex];
+  //   resultStr += str[currIndex];
 
-    currIndex += stepLen * coefficient;
-  }
+  //   currIndex += stepLen * coefficient;
+  // }
 
-  console.log('str', str);
-  console.log('strLen', strLen);
-  console.log('iterations', iterations);
-  console.log('resultStr', resultStr);
+  // console.log('str', str);
+  // console.log('strLen', strLen);
+  // console.log('iterations', iterations);
+  // console.log('resultStr', resultStr);
 
-  return resultStr;
+  // return resultStr;
 }
 
 /**
