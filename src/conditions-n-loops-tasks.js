@@ -1,5 +1,3 @@
-/* eslint-disable no-continue */
-/* eslint-disable no-param-reassign */
 /* *******************************************************************************************
  *                                                                                           *
  * Please read the following tutorial before implementing tasks:                             *
@@ -474,89 +472,35 @@ function rotateMatrix(matrix) {
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
 
-function sortByAsc(arr, lIndex = 0, rIndex = arr.length - 1) {
-  const arrLinkCopy = arr;
-  let left = lIndex;
-  let right = rIndex;
+function swap(arr, i, j) {
+  const arrCopy = arr;
+  const temp = arr[i];
+  arrCopy[i] = arr[j];
+  arrCopy[j] = temp;
+}
 
-  let pivotIndex = Math.floor((lIndex + rIndex) / 2);
-  const pivot = arrLinkCopy[pivotIndex];
+function partition(arr, left, right) {
+  const pivot = arr[right];
+  let i = left - 1;
 
-  let leftSideElemCount = pivotIndex - lIndex;
-  let rightSideElemCount = rIndex - pivotIndex;
-
-  while (leftSideElemCount) {
-    const lElem = arr[left];
-
-    if (lElem > pivot) {
-      let finded = false;
-
-      while (rightSideElemCount && !finded) {
-        const rElem = arrLinkCopy[right];
-
-        if (rElem < pivot) {
-          arrLinkCopy[left] = rElem;
-          arrLinkCopy[right] = lElem;
-
-          finded = true;
-        }
-
-        right -= 1;
-        rightSideElemCount -= 1;
-      }
-
-      if (!finded && left < pivotIndex) {
-        arrLinkCopy[pivotIndex] = lElem;
-        arrLinkCopy[left] = pivot;
-        pivotIndex = left;
-      }
+  for (let j = left; j < right; j += 1) {
+    if (arr[j] < pivot) {
+      i += 1;
+      swap(arr, i, j);
     }
-
-    if (lElem < pivot && left > pivotIndex) {
-      arrLinkCopy[pivotIndex] = lElem;
-      arrLinkCopy[left] = pivot;
-
-      if (left - pivotIndex > 1) {
-        const oldValue = pivotIndex;
-        leftSideElemCount += left - pivotIndex;
-        pivotIndex = left;
-        left = oldValue;
-      } else {
-        pivotIndex = left;
-      }
-    }
-
-    left += 1;
-    leftSideElemCount -= 1;
   }
 
-  while (rightSideElemCount) {
-    const rElem = arr[right];
+  swap(arr, i + 1, right);
+  return i + 1;
+}
 
-    if (
-      (rElem < pivot && right > pivotIndex) ||
-      (rElem > pivot && right < pivotIndex)
-    ) {
-      arrLinkCopy[pivotIndex] = rElem;
-      arrLinkCopy[right] = pivot;
+function sortByAsc(arr, left = 0, right = arr.length - 1) {
+  if (left >= right) return;
 
-      if (pivotIndex - right > 1) {
-        const oldValue = pivotIndex;
-        rightSideElemCount += pivotIndex - right;
-        pivotIndex = right;
-        right = oldValue;
-      } else {
-        pivotIndex = right;
-      }
-    }
+  const pivotIndex = partition(arr, left, right);
 
-    right -= 1;
-    rightSideElemCount -= 1;
-  }
-
-  if (pivotIndex - 1 > lIndex) sortByAsc(arr, lIndex, pivotIndex - 1);
-
-  if (pivotIndex + 1 < rIndex) sortByAsc(arr, pivotIndex + 1, rIndex);
+  sortByAsc(arr, left, pivotIndex - 1);
+  sortByAsc(arr, pivotIndex + 1, right);
 }
 
 /**
@@ -576,43 +520,32 @@ function sortByAsc(arr, lIndex = 0, rIndex = arr.length - 1) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
-  // let resultStr = '';
-  // let currIndex = 0;
-  // let coefficient;
-  // const strLen = str.length;
-  // const mod = strLen % 2 !== 0 ? strLen : strLen - 1;
-  // const stepLen = iterations % 4;
+function shuffleChar(str, iterations) {
+  let neededIter = iterations;
+  let currIter = 0;
+  let workerStr = '';
+  let resultStr = str;
 
-  // switch (iterations % (strLen - 1)) {
-  //   case 1:
-  //   case 2:
-  //     coefficient = 2;
-  //     break;
-  //   case 3:
-  //     coefficient = 1;
-  //     break;
-  //   default:
-  //     return str;
-  // }
+  while (neededIter) {
+    currIter += 1;
+    neededIter -= 1;
+    for (let i = 0; workerStr.length !== resultStr.length; i += 2) {
+      if (i === str.length) {
+        i %= str.length - 1;
+      }
 
-  // while (resultStr.length !== str.length) {
-  //   if (currIndex >= str.length) {
-  //     currIndex %= mod;
-  //   }
+      workerStr += resultStr[i];
+    }
 
-  //   resultStr += str[currIndex];
+    resultStr = workerStr;
+    workerStr = '';
 
-  //   currIndex += stepLen * coefficient;
-  // }
+    if (resultStr === str) {
+      neededIter %= currIter;
+    }
+  }
 
-  // console.log('str', str);
-  // console.log('strLen', strLen);
-  // console.log('iterations', iterations);
-  // console.log('resultStr', resultStr);
-
-  // return resultStr;
+  return resultStr;
 }
 
 /**
@@ -632,8 +565,89 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+
+function createCombinations(arr, num = -1) {
+  if (arr.length === 2) {
+    if (num !== -1) {
+      if (arr[0] <= num) return [];
+      return [[arr[0], arr[1]]];
+    }
+    return [arr, [arr[1], arr[0]]];
+  }
+
+  const allCombin = [];
+
+  const useElem = {};
+
+  for (let i = 0; i < arr.length; i += 1) {
+    const fixElem = arr[i];
+
+    if (!(fixElem in useElem) && +fixElem > num) {
+      useElem[fixElem] = 1;
+
+      const otherElem = arr.filter((elem, index) => index !== i);
+
+      const otherCombin = createCombinations(otherElem);
+
+      const fixElemCombin = otherCombin.map((combination) => {
+        return [fixElem, ...combination];
+      });
+
+      allCombin.push(...fixElemCombin);
+    }
+  }
+
+  return allCombin;
+}
+
+function findNextBigger(arr) {
+  if (!arr.length) return -1;
+  const transformArr = arr.map((elemArr) => +elemArr.join(''));
+  return Math.min(...transformArr);
+}
+
+function convertNumToArray(num) {
+  const arr = [];
+  let currNum = num;
+
+  do {
+    const devison = currNum % 10;
+    currNum = Math.floor(currNum / 10);
+    arr.push(devison);
+  } while (currNum);
+
+  return arr.reverse();
+}
+
+function getNearestBigger(number) {
+  if (number < 10) return number;
+
+  const numberArr = convertNumToArray(number);
+  let currNum = numberArr[numberArr.length - 1];
+  const currNumArr = [currNum];
+  let pos = 1;
+
+  while (pos !== numberArr.length) {
+    if (currNumArr.length >= 2) {
+      const combinations = createCombinations(currNumArr, +currNum);
+      const startPos = numberArr.length - pos;
+      const num = +numberArr
+        .filter((elem, index) => index >= startPos)
+        .join('');
+      const nextBigger = findNextBigger(combinations, num);
+
+      if (nextBigger !== -1) {
+        numberArr.splice(-pos, pos, nextBigger);
+        break;
+      }
+    }
+
+    pos += 1;
+    currNum = numberArr[numberArr.length - pos];
+    currNumArr.push(currNum);
+  }
+
+  return +numberArr.join('');
 }
 
 module.exports = {
