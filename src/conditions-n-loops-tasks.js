@@ -627,7 +627,7 @@ function getNearestBigger(number) {
   const currNumArr = [currNum];
   let pos = 1;
 
-  while (pos !== numberArr.length) {
+  while (pos <= numberArr.length) {
     if (currNumArr.length >= 2) {
       const combinations = createCombinations(currNumArr, +currNum);
       const startPos = numberArr.length - pos;
